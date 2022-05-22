@@ -1,4 +1,8 @@
 import humanize from 'humanize-string'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
+import { twilight } from 'react-syntax-highlighter/dist/esm/styles/prism'
 
 import { useMutation } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
@@ -66,31 +70,70 @@ const Note = ({ note }) => {
     <>
       <div className="rw-segment">
         <header className="rw-segment-header">
-          <h2 className="rw-heading rw-heading-secondary">Note {note.id} Detail</h2>
+          <h2 className="rw-heading rw-heading-secondary">
+            Note {note.id} Detail
+          </h2>
         </header>
         <table className="rw-table">
           <tbody>
             <tr>
               <th>Id</th>
               <td>{note.id}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Name</th>
               <td>{note.name}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Description</th>
               <td>{note.description}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Source</th>
               <td>{note.source}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Created at</th>
               <td>{timeTag(note.createdAt)}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Updated at</th>
               <td>{timeTag(note.updatedAt)}</td>
             </tr>
           </tbody>
         </table>
+      </div>
+      <div className="rw-segment">
+        <header
+          className="rw-segment-header"
+          style={{ marginBottom: '.75rem' }}
+        >
+          <h2 className="rw-heading rw-heading-secondary">Preview</h2>
+        </header>
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          components={{
+            code({ node, inline, className, children, ...props }) {
+              const match = /language-(\w+)/.exec(className || '')
+              return !inline && match ? (
+                <SyntaxHighlighter
+                  style={twilight}
+                  language={match[1]}
+                  PreTag="div"
+                  {...props}
+                >
+                  {String(children).replace(/\n$/, '')}
+                </SyntaxHighlighter>
+              ) : (
+                <code className={className} {...props}>
+                  {children}
+                </code>
+              )
+            },
+          }}
+        >
+          {note.source}
+        </ReactMarkdown>
       </div>
       <nav className="rw-button-group">
         <Link

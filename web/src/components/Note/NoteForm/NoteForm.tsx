@@ -3,6 +3,7 @@ import {
   FormError,
   FieldError,
   Label,
+  TextAreaField,
   TextField,
   Submit,
 } from '@redwoodjs/forms'
@@ -65,7 +66,7 @@ const NoteForm = (props) => {
           Source
         </Label>
 
-        <TextField
+        <TextAreaField
           name="source"
           defaultValue={props.note?.source}
           className="rw-input"
