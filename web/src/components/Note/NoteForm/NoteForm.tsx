@@ -6,9 +6,12 @@ import {
   TextAreaField,
   TextField,
   Submit,
+  useForm,
 } from '@redwoodjs/forms'
 
 const NoteForm = (props) => {
+  const { setValue } = useForm()
+
   const onSubmit = (data) => {
     props.onSave(data, props?.note?.id)
   }
@@ -75,6 +78,16 @@ const NoteForm = (props) => {
         />
 
         <FieldError name="source" className="rw-field-error" />
+
+        <button
+          type="button"
+          onClick={() => {
+            console.log('CLICK!')
+            setValue('source', 'value set by click')
+          }}
+        >
+          Set Value
+        </button>
 
         <div className="rw-button-group">
           <Submit disabled={props.loading} className="rw-button rw-button-blue">
